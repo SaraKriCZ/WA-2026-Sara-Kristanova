@@ -1,24 +1,4 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Knihovna - Seznam knížek</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased">
-
-<header class="bg-white shadow-sm border-b border-slate-200 mb-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
-        <h1 class="text-2xl font-extrabold text-blue-600 tracking-tight">Knihovna<span class="text-orange-500">.</span></h1>
-        <nav class="flex items-center space-x-6">
-            <a href="/WA-2026-SARA-KRISTANOVA/public/index.php" class="text-slate-500 hover:text-blue-600 font-medium transition">Domů</a>
-            <a href="/WA-2026-SARA-KRISTANOVA/public/index.php?url=book/create" class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition duration-150 ease-in-out">
-                + Přidat novou knihu
-            </a>
-        </nav>
-    </div>
-</header>
+<?php require_once '../app/views/layout/header.php'; ?>
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
     <div class="flex justify-between items-end mb-6">
@@ -74,8 +54,4 @@
     <?php endif; ?>
 </main>
 
-<footer class="text-center py-6 text-slate-400 text-sm">
-    <p>&copy; WA 2026 - Výukový projekt | Sara Kristanova</p>
-</footer>
-</body>
 </html>

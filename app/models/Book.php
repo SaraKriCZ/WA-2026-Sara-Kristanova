@@ -9,44 +9,46 @@ class Book {
     }
 
     // Metoda pro vytvoření nové knihy
-    public function create($data) {
-        // Příprava SQL dotazu (používáme zástupné znaky :nazev pro bezpečnost)
-        $query = "INSERT INTO " . $this->table_name . " 
-                  (title, author, isbn, category, subcategory, year, price, link, description) 
-                  VALUES 
-                  (:title, :author, :isbn, :category, :subcategory, :year, :price, :link, :desc)";
+public function create($data) {
+    // Připravíme si kompletní SQL dotaz se VŠEMI sloupečky
+    $query = "INSERT INTO " . $this->table_name . " 
+              (title, author, isbn, category, subcategory, year, price, link, description, images) 
+              VALUES 
+              (:title, :author, :isbn, :category, :subcategory, :year, :price, :link, :description, :images)";
 
-        $stmt = $this->conn->prepare($query);
+    $stmt = $this->conn->prepare($query);
 
-        // Očištění dat (odstranění zbytečných mezer a HTML tagů)
-        $title = htmlspecialchars(strip_tags($data['title']));
-        $author = htmlspecialchars(strip_tags($data['author']));
-        $isbn = htmlspecialchars(strip_tags($data['isbn']));
-        $category = htmlspecialchars(strip_tags($data['category']));
-        $subcategory = htmlspecialchars(strip_tags($data['subcategory']));
-        $year = htmlspecialchars(strip_tags($data['year']));
-        $price = htmlspecialchars(strip_tags($data['price']));
-        $link = htmlspecialchars(strip_tags($data['link']));
-        $desc = htmlspecialchars(strip_tags($data['desc']));
+    // Očistíme data (pro jistotu, i když to můžeš dělat už v kontroleru)
+    $title = htmlspecialchars(strip_tags($data['title'] ?? ''));
+    $author = htmlspecialchars(strip_tags($data['author'] ?? ''));
+    $isbn = htmlspecialchars(strip_tags($data['isbn'] ?? ''));
+    $category = htmlspecialchars(strip_tags($data['category'] ?? ''));
+    $subcategory = htmlspecialchars(strip_tags($data['subcategory'] ?? ''));
+    $year = (int)($data['year'] ?? 0);
+    // Cena musí být float, pokud povoluješ desetinná čísla
+    $price = (float)($data['price'] ?? 0.0); 
+    $link = htmlspecialchars(strip_tags($data['link'] ?? ''));
+    $description = htmlspecialchars(strip_tags($data['description'] ?? ''));
+    $images = $data['images'] ?? ''; // Sem přijde ten JSON string z kontroleru
 
-        // Propojení proměnných se zástupnými znaky v SQL dotazu
-        $stmt->bindParam(":title", $title);
-        $stmt->bindParam(":author", $author);
-        $stmt->bindParam(":isbn", $isbn);
-        $stmt->bindParam(":category", $category);
-        $stmt->bindParam(":subcategory", $subcategory);
-        $stmt->bindParam(":year", $year);
-        $stmt->bindParam(":price", $price);
-        $stmt->bindParam(":link", $link);
-        $stmt->bindParam(":desc", $desc);
+    // Navážeme parametry na SQL dotaz
+    $stmt->bindParam(':title', $title);
+    $stmt->bindParam(':author', $author);
+    $stmt->bindParam(':isbn', $isbn);
+    $stmt->bindParam(':category', $category);
+    $stmt->bindParam(':subcategory', $subcategory);
+    $stmt->bindParam(':year', $year);
+    $stmt->bindParam(':price', $price);
+    $stmt->bindParam(':link', $link);
+    $stmt->bindParam(':description', $description);
+    $stmt->bindParam(':images', $images);
 
-        // Spuštění dotazu
-        if($stmt->execute()) {
-            return true; // Uložení se povedlo
-        }
-        
-        return false; // Uložení se nepovedlo
+    // Spustíme a vrátíme true, pokud to klaplo
+    if($stmt->execute()) {
+        return true;
     }
+    return false;
+}
     // Metoda pro načtení všech knih
     public function getAll() {
         // Jednoduchý SQL dotaz, který vybere vše z tabulky books a seřadí je od nejnovější

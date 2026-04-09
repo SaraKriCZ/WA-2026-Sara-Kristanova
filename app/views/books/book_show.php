@@ -1,21 +1,18 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail knihy</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+<?php require_once '../app/views/layout/header.php'; ?>
 
-<header class="bg-white shadow-sm border-b border-slate-200 mb-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
-        <h1 class="text-2xl font-extrabold text-blue-600 tracking-tight">Knihovna<span class="text-orange-500">.</span></h1>
-        <a href="/WA-2026-SARA-KRISTANOVA/public/index.php" class="text-slate-500 hover:text-blue-600 font-medium transition">&larr; Zpět na seznam</a>
+<?php 
+// Rozbalíme text z databáze zpět na pole obrázků
+$images = !empty($book['images']) ? json_decode($book['images'], true) : [];
+?>
+
+<main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 mt-8">
+    
+    <div class="mb-6">
+        <a href="/WA-2026-SARA-KRISTANOVA/public/index.php" class="inline-flex items-center text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors">
+            &larr; Zpět na seznam
+        </a>
     </div>
-</header>
 
-<main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
     <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-slate-100">
         
         <div class="bg-blue-600 px-8 py-6 flex justify-between items-center">
@@ -65,6 +62,25 @@
                 </p>
             </div>
             
+            <div class="mt-8">
+                <span class="block text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">Obrázky knihy</span>
+                <?php if (!empty($images) && is_array($images)): ?>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <?php foreach ($images as $img): ?>
+                            <div class="rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-white">
+                                <img src="/WA-2026-SARA-KRISTANOVA/public/uploads/<?= htmlspecialchars($img) ?>" 
+                                     alt="Obrázek knihy <?= htmlspecialchars($book['title']) ?>" 
+                                     class="w-full h-48 object-cover hover:scale-105 transition duration-300">
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 text-slate-500 italic">
+                        Tato kniha zatím nemá nahrané žádné obrázky.
+                    </div>
+                <?php endif; ?>
+            </div>
+
             <div class="mt-8 pt-6 border-t border-slate-100 flex gap-4">
                 <a href="/WA-2026-SARA-KRISTANOVA/public/index.php?url=book/edit/<?= $book['id'] ?>" class="inline-flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-xl shadow-sm transition duration-200">
                     Upravit tuto knihu
@@ -73,5 +89,5 @@
         </div>
     </div>
 </main>
-</body>
-</html>
+
+<?php require_once '../app/views/layout/footer.php'; ?>

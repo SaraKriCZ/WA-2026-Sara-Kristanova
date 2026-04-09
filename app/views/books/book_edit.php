@@ -1,21 +1,6 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upravit knihu</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+<?php require_once '../app/views/layout/header.php'; ?>
 
-<header class="bg-white shadow-sm border-b border-slate-200 mb-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
-        <h1 class="text-2xl font-extrabold text-blue-600 tracking-tight">Knihovna<span class="text-orange-500">.</span></h1>
-        <a href="/WA-2026-SARA-KRISTANOVA/public/index.php" class="text-slate-500 hover:text-blue-600 font-medium transition">&larr; Zpět na seznam</a>
-    </div>
-</header>
-
-<main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+<main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 flex-grow w-full">
     <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-slate-100">
         <div class="bg-slate-800 px-8 py-6 flex justify-between items-center">
             <div>
@@ -57,6 +42,7 @@
                     <label for="year" class="block text-sm font-semibold text-slate-700 mb-2">Rok vydání <span class="text-orange-500">*</span></label>
                     <input type="number" id="year" name="year" value="<?= htmlspecialchars($book['year']) ?>" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
                 </div>
+                
                 <div>
                     <label for="price" class="block text-sm font-semibold text-slate-700 mb-2">Cena (Kč)</label>
                     <input type="number" id="price" name="price" step="0.5" value="<?= htmlspecialchars($book['price']) ?>" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
@@ -72,7 +58,41 @@
                     <textarea id="description" name="description" rows="5" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"><?= htmlspecialchars($book['description']) ?></textarea>
                 </div>
 
-                <div class="md:col-span-2 pt-4 border-t border-slate-100 flex gap-4">
+                <div class="md:col-span-2 pt-4 border-t border-slate-100">
+                    <label class="block text-sm font-semibold text-slate-500 mb-2 uppercase tracking-wider">Obrázky knihy</label>
+                    
+                    <?php 
+                    // Převod JSONu z databáze zpět na pole
+                    $existingImages = !empty($book['images']) ? json_decode($book['images'], true) : []; 
+                    ?>
+                    
+                    <?php if (!empty($existingImages) && is_array($existingImages)): ?>
+                        <div class="mb-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <p class="text-sm text-slate-700 font-semibold mb-3">Aktuálně nahrané obrázky:</p>
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <?php foreach ($existingImages as $img): ?>
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-600 shadow-sm">
+                                        🖼️ <?= htmlspecialchars($img) ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            </div>
+                            <p class="text-xs text-orange-600 font-bold flex items-center gap-1 bg-orange-50 p-2 rounded-lg border border-orange-100 mt-2">
+                                ⚠️ Upozornění: Pokud nyní nahrajete nové soubory, tyto staré budou trvale přepsány.
+                            </p>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="w-full">
+                        <label for="images" class="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-orange-50 hover:border-orange-400 transition-colors">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <span id="file-title" class="text-sm text-slate-500 font-semibold">Klikni pro výběr souborů</span>
+                                <span id="file-info" class="text-xs text-slate-400 mt-1 text-center px-4">Žádné soubory nebyly vybrány</span>
+                            </div>
+                            <input type="file" id="images" name="images[]" multiple accept="image/*" class="hidden">
+                        </label>
+                    </div>
+                </div>
+                <div class="md:col-span-2 pt-4 flex gap-4">
                     <button type="submit" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-200">
                         Uložit změny
                     </button>
@@ -81,5 +101,29 @@
         </form>
     </div>
 </main>
-</body>
-</html>
+
+<script>
+    const fileInput = document.getElementById('images');
+    const fileTitle = document.getElementById('file-title');
+    const fileInfo = document.getElementById('file-info');
+
+    fileInput.addEventListener('change', function(event) {
+        const files = event.target.files;
+        
+        if (files.length === 0) {
+            fileTitle.textContent = 'Klikni pro výběr souborů';
+            fileTitle.className = 'text-sm text-slate-500 font-semibold';
+            fileInfo.textContent = 'Žádné soubory nebyly vybrány';
+        } else if (files.length === 1) {
+            fileTitle.textContent = 'Soubor připraven';
+            fileTitle.className = 'text-sm text-orange-500 font-bold'; 
+            fileInfo.textContent = files[0].name;
+        } else {
+            fileTitle.textContent = 'Soubory připraveny';
+            fileTitle.className = 'text-sm text-orange-500 font-bold';
+            fileInfo.textContent = 'Vybráno celkem: ' + files.length + ' souborů';
+        }
+    });
+</script>
+
+<?php require_once '../app/views/layout/footer.php'; ?>
