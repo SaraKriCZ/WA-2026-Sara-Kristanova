@@ -2,7 +2,7 @@
 
 class App {
     // Výchozí nastavení - pokud uživatel přijde na hlavní stránku a nezadá URL,
-    // automaticky se načte BookController a jeho metoda index()
+    // automaticky se načte ReviewController a jeho metoda index()
     protected $controller = 'ReviewController';
     protected $method = 'index';
     protected $params = [];
@@ -11,8 +11,8 @@ class App {
         // Zavoláme pomocnou funkci, která nám rozseká URL na pole
         $url = $this->parseUrl();
 
-        // 1. KONTROLER (např. url=book/...)
-        // $url[0] by mělo obsahovat 'book'. My z toho potřebujeme udělat 'BookController'
+        // 1. KONTROLER (např. url=review/...)
+        // $url[0] by mělo obsahovat 'book'. My z toho potřebujeme udělat 'ReviewController'
         if (isset($url[0])) {
             $controllerName = ucfirst($url[0]) . 'Controller'; // ucfirst zvětší první písmeno
             
@@ -27,7 +27,7 @@ class App {
         require_once '../app/controllers/' . $this->controller . '.php';
         $this->controller = new $this->controller;
 
-        // 2. METODA (např. url=book/create)
+        // 2. METODA (např. url=review/create)
         // $url[1] by mělo obsahovat 'create' nebo 'store' atd.
         if (isset($url[1])) {
             // Zkontrolujeme, jestli v našem kontroleru taková metoda (funkce) existuje
