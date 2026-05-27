@@ -126,7 +126,7 @@ public $updated_at;
         $stmt->bindParam(":fuel", $this->fuel);
         $stmt->bindParam(":engine_volume", $this->engine_volume);
         $stmt->bindParam(":power", $this->power);
-        $stmt->bindParam(':updated_by', $this->updated_by); // PŘIDÁNO
+        $stmt->bindParam(':updated_by', $this->updated_by); 
         $stmt->bindParam(":rating_comfort", $this->rating_comfort);
         $stmt->bindParam(":rating_performance", $this->rating_performance);
         $stmt->bindParam(":rating_design", $this->rating_design);

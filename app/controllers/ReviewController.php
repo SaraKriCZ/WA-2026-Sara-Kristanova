@@ -109,9 +109,11 @@ class ReviewController {
         $this->review->updated_by         = $_SESSION['user_id'];
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            if (!empty($car['image_path']) && file_exists($car['image_path'])) unlink($car['image_path']);
+            // TADY se maže stará fotka ze serveru
+            if (!empty($car['image_path']) && file_exists($car['image_path'])) unlink($car['image_path']); // ← tohle smaže soubor
             $dir  = "uploads/";
             if (!is_dir($dir)) mkdir($dir, 0777, true);
+            // A nahraje se nová
             $ext  = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
             $path = $dir . uniqid() . '.' . $ext;
             $this->review->image_path = move_uploaded_file($_FILES['image']['tmp_name'], $path) ? $path : $car['image_path'];
