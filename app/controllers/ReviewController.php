@@ -39,12 +39,13 @@ class ReviewController {
             $this->review->recommend          = isset($_POST['recommend']) ? 1 : 0;
             $this->review->image_path         = null;
 
+            // Zkontroluje jestli soubor přišel bez chyby
             if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
                 $dir = "uploads/";
                 if (!is_dir($dir)) mkdir($dir, 0777, true);
                 $ext  = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $path = $dir . uniqid() . '.' . $ext;
-                if (move_uploaded_file($_FILES['image']['tmp_name'], $path)) {
+                $path = $dir . uniqid() . '.' . $ext; // Vygeneruje náhodné jméno souboru – útočník nemůže ovlivnit název
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $path)) { // Bezpečně přesune soubor z dočasného umístění
                     $this->review->image_path = $path;
                 }
             }

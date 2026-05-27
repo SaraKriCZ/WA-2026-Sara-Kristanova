@@ -12,7 +12,7 @@ class App {
         $url = $this->parseUrl();
 
         // 1. KONTROLER (např. url=review/...)
-        // $url[0] by mělo obsahovat 'book'. My z toho potřebujeme udělat 'ReviewController'
+        // $url[0] by mělo obsahovat 'review'. My z toho potřebujeme udělat 'ReviewController'
         if (isset($url[0])) {
             $controllerName = ucfirst($url[0]) . 'Controller'; // ucfirst zvětší první písmeno
             
